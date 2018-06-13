@@ -3,10 +3,11 @@ from copy import copy
 
 
 class Being(object):
-    birthrate_max = 9
-    mortality = 0.91
+    birthrate_mu = 1
+    birthrate_sigma = 0.005
+    mortality = 0.5
 
-    def born(self):
+    def reproduce(self):
         return copy(self)
 
 
@@ -15,7 +16,7 @@ class SimpleBeing(Being):
 
 
 class LessMortalBeing(Being):
-    mortality = 0.9
+    mortality = 0.1
 
 
 class MutableBeing(Being):
@@ -29,9 +30,9 @@ class MutableBeing(Being):
         if random.random() < self.mutation_chance:
             if random.random() > 0.5:
                 if random.random() >= 0.5:
-                    self.birthrate_max += self.mutation_birthrate_step
+                    self.birthrate_mu += self.mutation_birthrate_step
                 else:
-                    self.birthrate_max -= self.mutation_birthrate_step
+                    self.birthrate_mu -= self.mutation_birthrate_step
             else:
                 if random.random() >= 0.5:
                     self.mortality += self.mutation_mortality_step
@@ -40,13 +41,13 @@ class MutableBeing(Being):
 
     def __init__(self, parent = None):
         if parent:
-            self.birthrate_max = parent.birthrate_max
+            self.birthrate_mu = parent.birthrate_max
             self.mortality = parent.mortality
             self.mutate()
         else:
-            self.birthrate_max = self.basic_birthrate_max
+            self.birthrate_mu = self.basic_birthrate_max
             self.mortality = self.basic_mortality
 
-    def born(self):
+    def reproduce(self):
         return self.__class__(self)
 
